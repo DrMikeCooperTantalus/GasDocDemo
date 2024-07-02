@@ -2,6 +2,7 @@
 
 
 #include "Characters/Heroes/Abilities/GDGA_FireGun.h"
+#include "RPG/PowerSettings.h"
 #include "AbilitySystemComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Characters/Heroes/GDHeroCharacter.h"
@@ -83,7 +84,7 @@ void UGDGA_FireGun::EventReceived(FGameplayTag EventTag, FGameplayEventData Even
 		FRotator Rotation = UKismetMathLibrary::FindLookAtRotation(Start, End);
 
 		TArray<FGameplayEffectSpecHandle> effectSpecHandles;
-		for(const auto& Effect: Effects)
+		for(const auto& Effect: PowerSettings->Effects)
 		{
 			FGameplayEffectSpecHandle effectSpecHandle = MakeOutgoingGameplayEffectSpec(Effect, GetAbilityLevel());
 			effectSpecHandles.Add(effectSpecHandle);
