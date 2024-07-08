@@ -83,6 +83,11 @@ public:
 	FGameplayAttributeData Armor;
 	ATTRIBUTE_ACCESSORS(UGDAttributeSetBase, Armor)
 
+	// DamageBoost is a percentage boost to damage of the character's attacks 
+    UPROPERTY(BlueprintReadOnly, Category = "Buff Stats", ReplicatedUsing = OnRep_DamageBoost)
+	FGameplayAttributeData DamageBoost;
+	ATTRIBUTE_ACCESSORS(UGDAttributeSetBase, DamageBoost)
+	
 	// Damage is a meta attribute used by the DamageExecution to calculate final damage, which then turns into -Health
 	// Temporary value that only exists on the Server. Not replicated.
 	UPROPERTY(BlueprintReadOnly, Category = "Damage")
@@ -157,6 +162,9 @@ protected:
 	UFUNCTION()
 	virtual void OnRep_Armor(const FGameplayAttributeData& OldArmor);
 
+	UFUNCTION()
+	virtual void OnRep_DamageBoost(const FGameplayAttributeData& OldDamageBoost);
+	
 	UFUNCTION()
 	virtual void OnRep_MoveSpeed(const FGameplayAttributeData& OldMoveSpeed);
 

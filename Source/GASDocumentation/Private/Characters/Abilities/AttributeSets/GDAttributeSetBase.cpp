@@ -233,6 +233,7 @@ void UGDAttributeSetBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 	DOREPLIFETIME_CONDITION_NOTIFY(UGDAttributeSetBase, MaxStamina, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UGDAttributeSetBase, StaminaRegenRate, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UGDAttributeSetBase, Armor, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UGDAttributeSetBase, DamageBoost, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UGDAttributeSetBase, MoveSpeed, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UGDAttributeSetBase, CharacterLevel, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UGDAttributeSetBase, XP, COND_None, REPNOTIFY_Always);
@@ -303,6 +304,11 @@ void UGDAttributeSetBase::OnRep_StaminaRegenRate(const FGameplayAttributeData& O
 void UGDAttributeSetBase::OnRep_Armor(const FGameplayAttributeData& OldArmor)
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UGDAttributeSetBase, Armor, OldArmor);
+}
+
+void UGDAttributeSetBase::OnRep_DamageBoost(const FGameplayAttributeData& OldDamageBoost)
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UGDAttributeSetBase, DamageBoost, OldDamageBoost);
 }
 
 void UGDAttributeSetBase::OnRep_MoveSpeed(const FGameplayAttributeData& OldMoveSpeed)

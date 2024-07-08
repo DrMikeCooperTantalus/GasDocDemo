@@ -10,7 +10,8 @@ struct GDDamageStatics
 {
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Armor);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Damage);
-
+	DECLARE_ATTRIBUTE_CAPTUREDEF(DamageBoost);
+	
 	GDDamageStatics()
 	{
 		// Snapshot happens at time of GESpec creation
@@ -20,6 +21,9 @@ struct GDDamageStatics
 		// Capture optional Damage set on the damage GE as a CalculationModifier under the ExecutionCalculation
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UGDAttributeSetBase, Damage, Source, true);
 
+		// Capture optional Damage set on the damage GE as a CalculationModifier under the ExecutionCalculation
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UGDAttributeSetBase, DamageBoost, Source, true);
+		
 		// Capture the Target's Armor. Don't snapshot.
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UGDAttributeSetBase, Armor, Target, false);
 	}
@@ -34,6 +38,7 @@ static const GDDamageStatics& DamageStatics()
 UGDDamageExecCalculation::UGDDamageExecCalculation()
 {
 	RelevantAttributesToCapture.Add(DamageStatics().DamageDef);
+	RelevantAttributesToCapture.Add(DamageStatics().DamageBoostDef);
 	RelevantAttributesToCapture.Add(DamageStatics().ArmorDef);
 }
 
@@ -65,9 +70,12 @@ void UGDDamageExecCalculation::Execute_Implementation(const FGameplayEffectCusto
 	// Add SetByCaller damage if it exists
 	Damage += FMath::Max<float>(Spec.GetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Damage")), false, -1.0f), 0.0f);
 
-	float UnmitigatedDamage = Damage; // Can multiply any damage boosters here
+	float DamageBoost = 0.0f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().DamageBoostDef, EvaluationParameters, DamageBoost);
 	
-	float MitigatedDamage = (UnmitigatedDamage) * (100 / (100 + Armor));
+	float UnmitigatedDamage = Damage * (1.0f + DamageBoost/100.0f); // Can multiply any damage boosters here
+	
+	float MitigatedDamage = UnmitigatedDamage * (100 / (100 + Armor));
 
 	if (MitigatedDamage > 0.f)
 	{
