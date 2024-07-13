@@ -93,6 +93,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "GASDocumentation|GDCharacter")
 	virtual void FinishDying();
 
+	int GetSlottedAbilityIndex(const class UGDGameplayAbility* ability);
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -124,6 +126,10 @@ protected:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GASDocumentation|Abilities")
 	TArray<TSubclassOf<class UGDGameplayAbility>> CharacterAbilities;
 
+	// Slotted abilities for this Character in Left, Right, Q, R and E.
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GASDocumentation|Abilities")
+	TArray<TSubclassOf<class UGDGameplayAbility>> SlottedCharacterAbilities;
+	
 	// Default attributes for a character for initializing on spawn/respawn.
 	// This is an instant GE that overrides the values for attributes that get reset on spawn/respawn.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GASDocumentation|Abilities")

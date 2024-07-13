@@ -2,6 +2,9 @@
 
 
 #include "Characters/GDCharacterBase.h"
+
+#include <functional>
+
 #include "Characters/Abilities/AttributeSets/GDAttributeSetBase.h"
 #include "Characters/Abilities/GDAbilitySystemComponent.h"
 #include "Characters/Abilities/GDGameplayAbility.h"
@@ -265,6 +268,15 @@ void AGDCharacterBase::FinishDying()
 	Destroy();
 }
 
+int AGDCharacterBase::GetSlottedAbilityIndex(const UGDGameplayAbility* ability)
+{
+	const auto Class = ability->GetClass();
+	for (int i=0; i<SlottedCharacterAbilities.Num(); i++)
+		if (SlottedCharacterAbilities[i] == Class)
+			return i;
+	return -1;
+}
+
 // Called when the game starts or when spawned
 void AGDCharacterBase::BeginPlay()
 {
@@ -283,6 +295,16 @@ void AGDCharacterBase::AddCharacterAbilities()
 	{
 		AbilitySystemComponent->GiveAbility(
 			FGameplayAbilitySpec(StartupAbility, GetAbilityLevel(StartupAbility.GetDefaultObject()->AbilityID), static_cast<int32>(StartupAbility.GetDefaultObject()->AbilityInputID), this));
+	}
+	
+	int index = 0;
+	for (TSubclassOf<UGDGameplayAbility>& SlottedAbility : SlottedCharacterAbilities)
+	{
+		// calculate the appropriate ability ID from position in array
+		EGDAbilityInputID abilityID = static_cast<EGDAbilityInputID>(static_cast<int>(EGDAbilityInputID::Ability1) + index);
+		FGameplayAbilitySpec spec(SlottedAbility, GetAbilityLevel(abilityID), static_cast<int32>(abilityID), this);
+		FGameplayAbilitySpecHandle Ability = AbilitySystemComponent->GiveAbility(spec);
+		index++;
 	}
 
 	AbilitySystemComponent->bCharacterAbilitiesGiven = true;

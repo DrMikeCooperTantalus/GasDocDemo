@@ -31,7 +31,31 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability")
 	bool ActivateAbilityOnGranted = false;
 
+	// A cooldown defined in the power, that we can use to set by caller on cooldown GameplayEffects
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Costs")
+	float Cooldown;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Costs")
+	FGameplayTagContainer CooldownTags;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Costs")
+	float ManaCost;
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Costs")
+	float StaminaCost;
+	
+	// Temp container that we will return the pointer to in GetCooldownTags().
+	// This will be a union of our CooldownTags and the Cooldown GE's cooldown tags.
+	UPROPERTY(Transient)
+	FGameplayTagContainer TempCooldownTags;
+	
 	// If an ability is marked as 'ActivateAbilityOnGranted', activate them immediately when given here
 	// Epic's comment: Projects may want to initiate passives or do other "BeginPlay" type of logic here.
 	virtual void OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
+
+	virtual const FGameplayTagContainer* GetCooldownTags() const override;
+	virtual void ApplyCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const override;
+
+	// virtual UGameplayEffect* GetCostGameplayEffect() const override;
+	// virtual void ApplyCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const override;
 };
+
